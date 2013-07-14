@@ -102,15 +102,12 @@ void Tick::update(int delta){
 	
 	if(paused) return;
 	
-	tickCounter += delta;
+	counter += delta;
 	
 	if(tickPulse){
 	
-		pulseCounter+=delta;
-		
-		if(pulseCounter >= PULSE_LENGTH){ 
+		if(counter >= PULSE_LENGTH){ 
 			// pulse end
-			pulseCounter = 0;
 			tickPulse    = false;
 			digitalWrite(tickPin, LOW);
 			
@@ -121,11 +118,13 @@ void Tick::update(int delta){
 			count++; totalCount++;
 			if(tickComplete!=NULL) tickComplete();
 		}
-	} else if(tickCounter >= tickLength){
+	} else if(counter >= tickLength){
 		// pulse start
-		if(tickStart!=NULL) tickStart();
-		tickCounter = 0;
+		counter	   -=tickLength;
 		tickPulse   = true;
+		
+		if(tickStart!=NULL) tickStart();
+		
 		digitalWrite(tickPin, HIGH);
 	}
 }
@@ -183,6 +182,7 @@ void Tick::setClockPins(int a, int b){
 */
 void Tick::setTickLength(int value){
 	tickLength = value < MIN_TICK_LENGTH ? MIN_TICK_LENGTH : value;
+	reset();
 }
 
 
@@ -191,8 +191,7 @@ void Tick::setTickLength(int value){
 * Reset the counters and retrigger a tick/pulse
 */
 void Tick::reset(){
-	tickCounter 		= tickLength; // trigger a tick-pulse immediately
-	pulseCounter 		= 0;
+	counter		 		= tickLength-1; // trigger a tick-pulse immediately
 	count				= 0;
 	tickPulse			= false;
 	paused				= false;

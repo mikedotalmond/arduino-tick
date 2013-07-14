@@ -80,8 +80,7 @@ class Tick {
     int clockB;
 	int tickLength;
 	int tickPin;
-	int tickCounter;
-	int pulseCounter;
+	int counter;
 	int pulseLength;
 	bool tickPulse;
 	bool paused;
