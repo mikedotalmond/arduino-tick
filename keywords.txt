@@ -2,19 +2,20 @@
 
 ##
 ## Datatypes (KEYWORD1)
-Tick	 KEYWORD1
+Tick	 				KEYWORD1
 
 ##
 ## Instance Methods and Functions (KEYWORD2) ##
-setup	 		KEYWORD2
-reset			KEYWORD2
-update	 		KEYWORD2
-pause	 		KEYWORD2
-resume	 		KEYWORD2
-setClockPins	KEYWORD2
-setTickLength	KEYWORD2
-getCount		KEYWORD2
-getTotalCount	KEYWORD2
+setup	 				KEYWORD2
+reset					KEYWORD2
+stepMillisecond			KEYWORD2
+stepMillisecondDelta	KEYWORD2
+pause	 				KEYWORD2
+resume	 				KEYWORD2
+setClockPins			KEYWORD2
+setTickLength			KEYWORD2
+getCount				KEYWORD2
+getTotalCount			KEYWORD2
 
 ##
 ## Const/Defs (LITERAL1)

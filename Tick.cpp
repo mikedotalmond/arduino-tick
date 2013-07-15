@@ -88,46 +88,63 @@ void Tick::setup(int clockA, int clockB, int tickLength,
 	this->tickComplete  = tickComplete;
 	tickPin	 			= clockA;
 	totalCount			= 0;
-	
+	paused				= false;
 	setClockPins(clockA, clockB);
 	setTickLength(tickLength);
-	reset();
+}
+
+
+
+void Tick::stepMillisecondDelta(int delta){
+	if(paused) return;
+	milliseconds+=delta;
+	if(tickPulse){
+		if(milliseconds >= PULSE_LENGTH) pulseEnd();		
+	} else if(milliseconds >= tickLength){ 
+		pulseStart();
+	}
 }
 
 /**
-* @public
-* @param delta - milliseconds change since last call
-**/	
-void Tick::update(int delta){
-	
+* 
+*
+*/
+void Tick::stepMillisecond(){
 	if(paused) return;
-	
-	counter += delta;
-	
+	milliseconds++;
 	if(tickPulse){
-	
-		if(counter >= PULSE_LENGTH){ 
-			// pulse end
-			tickPulse    = false;
-			digitalWrite(tickPin, LOW);
-			
-			// switch field direction
-			tickPin = tickPin == clockA ? clockB : clockA;
-			
-			// tick!
-			count++; totalCount++;
-			if(tickComplete!=NULL) tickComplete();
-		}
-	} else if(counter >= tickLength){
-		// pulse start
-		counter	   -=tickLength;
-		tickPulse   = true;
-		
-		if(tickStart!=NULL) tickStart();
-		
-		digitalWrite(tickPin, HIGH);
+		if(milliseconds == PULSE_LENGTH) pulseEnd();		
+	} else if(milliseconds == tickLength){ 
+		pulseStart();
 	}
 }
+
+/**
+*
+*
+*/
+void Tick::pulseStart(){
+	milliseconds 	-= tickLength;
+	tickPulse 		= true;
+	digitalWrite(tickPin, HIGH);
+	if(tickStart!=NULL) tickStart();
+}
+
+/**
+*
+*
+*/
+void Tick::pulseEnd(){
+	tickPulse = false;
+	digitalWrite(tickPin, LOW);
+	// switch field direction
+	tickPin = tickPin == clockA ? clockB : clockA;
+	
+	// tick!
+	count++; totalCount++;
+	if(tickComplete!=NULL) tickComplete();
+}
+
 
 /**
 * @public 
@@ -135,6 +152,7 @@ void Tick::update(int delta){
 */
 void Tick::pause(){
 	paused = true;
+	reset();
 }
 
 /**
@@ -163,7 +181,7 @@ int Tick::getTotalCount(){
 
 /**
 * @public 
-* Set the output pins used for the alternate (biphase) driver pulses.
+* Set the output pins used for the alternate driver pulses.
 * Setting the pins also sets the pinMode to OUTPUT for the selected pins.
 * @param a	Pin A
 * @param b  Pin B
@@ -191,10 +209,9 @@ void Tick::setTickLength(int value){
 * Reset the counters and retrigger a tick/pulse
 */
 void Tick::reset(){
-	counter		 		= tickLength-1; // trigger a tick-pulse immediately
 	count				= 0;
+	milliseconds		= tickLength-1;
 	tickPulse			= false;
-	paused				= false;
 	digitalWrite(clockA, LOW);
 	digitalWrite(clockB, LOW);
 }

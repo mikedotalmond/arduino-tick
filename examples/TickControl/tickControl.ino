@@ -73,7 +73,7 @@ void loop() {
   // if time has advanced at least a millisecond: update.
   if(dt > 0) {
 	  processButtons();
-	  tick.update(dt);
+	  tick.stepMillisecondDelta(dt);
   }
 }
 

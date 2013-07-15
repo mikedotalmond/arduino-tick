@@ -66,27 +66,35 @@ class Tick {
 	void setClockPins(int a, int b);
 	void setTickLength(int value);
 	
-	void update(int delta);
 	void pause();
 	void resume();
 	void reset();
 	int getCount();
 	int getTotalCount();
 	
+	void stepMillisecond();
+	void stepMillisecondDelta(int delta);
+	
   protected:
-	int count;
-	int totalCount;
+	
+	unsigned long count;
+	unsigned long totalCount;
+   
     int clockA;
     int clockB;
 	int tickLength;
 	int tickPin;
-	int counter;
+	int milliseconds;
 	int pulseLength;
 	bool tickPulse;
 	bool paused;
 	
 	void (*tickComplete)();
 	void (*tickStart)();
+	
+	void pulseEnd();
+	void pulseStart();
 };
 
+ 
 #endif

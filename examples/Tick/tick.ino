@@ -51,7 +51,7 @@ void loop() {
   lastMillis 		 = time;
   
   // if time has advanced at least a millisecond: update.
-  if(dt > 0) tick.update(dt);
+  if(dt > 0) tick.stepMillisecondDelta(dt);
 }
 
 /**
